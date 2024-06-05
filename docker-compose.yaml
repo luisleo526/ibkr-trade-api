@@ -12,7 +12,11 @@ services:
     env_file:
       - .env
   ibkr-cpapi:
+    build:
+      context: ib-cpapi
+      dockerfile: Dockerfile
+    volumes:
+      - ./log:/log
     restart: always
-    image: dradrian/ibportal:latest
     ports:
-      - "9999:5000"
+      - "5000:5000"
