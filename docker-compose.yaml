@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+
+  api:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server.py:/app/server.py
+    env_file:
+      - .env
+    networks:
+      - ibkr
+  ibkr-cpapi:
+    restart: always
+    image: dradrian/ibportal:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - ibkr
+
+networks:
+  ibkr:
+      driver: bridge
