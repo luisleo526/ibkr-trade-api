@@ -19,6 +19,7 @@ app.add_middleware(
 LINE_API = 'https://notify-api.line.me/api/notify'
 IBKR_API = 'https://localhost:5000'
 
+
 class TVSide(str, Enum):
     BUY = "buy"
     SELL = "sell"

@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   api:
     restart: always
     build:
@@ -12,16 +11,8 @@ services:
       - ./server.py:/app/server.py
     env_file:
       - .env
-    networks:
-      - ibkr
   ibkr-cpapi:
     restart: always
     image: dradrian/ibportal:latest
     ports:
-      - "5000:5000"
-    networks:
-      - ibkr
-
-networks:
-  ibkr:
-      driver: bridge
+      - "9999:5000"
