@@ -75,6 +75,14 @@ class TVPayload(BaseModel):
     amount: str = Field(1, description="Amount of contracts")
     simulated: bool = Field(False, description="Simulated trading")
 
+    def get_info(self):
+        side = 買入 if self.side == "buy" else "賣出"
+        info = f"""
+        帳號ID: {self.accId}
+        訂單摘要: 在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作
+        模擬倉: {self.simulated}
+        """
+
 
 def send_line_notify(message):
     payload = {'message': message}
@@ -145,6 +153,7 @@ def confirmed_order(orderId: str):
 
 @app.post("/action", tags=["TradingView專用"])
 async def action(payload: TVPayload, good: bool = Depends(required_login)):
+    send_line_notify(f"接收到訂單：\n\n{payload.get_info()}")
     if not good:
         send_line_notify(f"接收到訂單，但尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
 
@@ -182,7 +191,7 @@ async def list_account_id(good: bool = Depends(required_login)):
             send_line_notify(f"操作 /list/accountId 失敗\n原因：\n\n{str(e)}")
             return {"message": str(e)}
     else:
-        send_line_notify("操作 /list/accountId 失敗，尚未登入，請前往登入！")
+        send_line_notify(f"操作 /list/accountId 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
 
 
@@ -202,7 +211,7 @@ async def list_futures(
             send_line_notify(f"操作失敗 /list/conid\n原因：\n\n{str(e)}")
             return {"message": str(e)}
     else:
-        send_line_notify("操作失敗 /list/conid ，尚未登入，請前往登入！")
+        send_line_notify(f"操作失敗 /list/conid ，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
 
 
@@ -222,7 +231,7 @@ async def list_stock(
             send_line_notify(f"操作失敗 /list/conid\n原因：\n\n{str(e)}")
             return {"message": str(e)}
     else:
-        send_line_notify("操作失敗 /list/conid ，尚未登入，請前往登入！")
+        send_line_notify(f"操作失敗 /list/conid ，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
 
 
@@ -242,5 +251,5 @@ async def list_conid(
             send_line_notify(f"操作失敗 /list/conid\n原因：\n\n{str(e)}")
             return {"message": str(e)}
     else:
-        send_line_notify("操作失敗 /list/conid ，尚未登入，請前往登入！")
+        send_line_notify(f"操作 /list/conid 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
