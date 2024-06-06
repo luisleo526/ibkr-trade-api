@@ -12,16 +12,26 @@ services:
     environment:
       - LINE_NOTIFY_API_KEY=
       - CPAPI_URL=
-  ibeam:
-    image: voyz/ibeam
-    container_name: ibeam
-    environment:
-      - IBEAM_ACCOUNT=
-      - IBEAM_PASSWORD=
-      - IBEAM_LOG_LEVEL=DEBUG
-      - IBEAM_ERROR_SCREENSHOTS=True
+  ibkr:
+    restart: always
+    build:
+      context: .
+      dockerfile: IBKR.Dockerfile
     ports:
-      - "15000:5000"
-      - "15001:5001"
-    network_mode: bridge # Required due to clientportal.gw IP whitelist
-    restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+      - "5000:5000"
+    volumes:
+      - ./log:/app/log
+
+#  ibeam:
+#    image: voyz/ibeam
+#    container_name: ibeam
+#    environment:
+#      - IBEAM_ACCOUNT=
+#      - IBEAM_PASSWORD=
+#      - IBEAM_LOG_LEVEL=DEBUG
+#      - IBEAM_ERROR_SCREENSHOTS=True
+#    ports:
+#      - "15000:5000"
+#      - "15001:5001"
+#    network_mode: bridge # Required due to clientportal.gw IP whitelist
+#    restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
