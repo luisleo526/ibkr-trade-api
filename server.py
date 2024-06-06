@@ -79,7 +79,7 @@ class TVPayload(BaseModel):
         side = '買入' if self.side == "buy" else "賣出"
         info = f"""
         帳號ID: {self.accId}
-        訂單摘要: 在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作
+        訂單摘要: \n在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作\n
         模擬倉: {self.simulated}
         """
         return info
