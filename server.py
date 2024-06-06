@@ -10,7 +10,7 @@ from typing import Annotated
 
 app = FastAPI(
     title="TradingView IB Trader",
-    description="""
+    description=f"""
     這是一個透過 IB API 來下單的 FastAPI 服務，主要是為了讓使用者可以
     透過TradingView Webhook來執行IB Client Portal下單，並透過 Line Notify 來通知使用者。
     
@@ -40,8 +40,8 @@ app = FastAPI(
     
     
     ## TradingView Webhook 設定
-    
-    """ + f"{os.getenv('API_HOST')}/action",
+    {os.getenv('API_HOST')}/action
+    """ ,
     swagger_ui_parameters={
         "useUnsafeMarkdown": True
     }
@@ -80,7 +80,9 @@ class TVPayload(BaseModel):
         info = f"""
         帳號ID: {self.accId}
         訂單摘要: \n在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作\n
-        模擬倉: {self.simulated}
+        模擬倉: {self.simulated}\n\n
+        合約細節可於登入後前往以下連結查看:
+        {os.getenv('API_HOST')}/contract?conid={self.symbol}
         """
         return info
 
