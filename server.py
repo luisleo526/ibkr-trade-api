@@ -38,9 +38,9 @@ app = FastAPI(
     }
     ```
     
-    
     ## TradingView Webhook 設定
-    """ + f"\n{os.getenv('API_HOST')}/action",
+    
+    """ + f"{os.getenv('API_HOST')}/action",
     swagger_ui_parameters={
         "useUnsafeMarkdown": True
     }
