@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fb39abf-f77e-40c2-b4a2-8e236b5e49b1" name="Changes" comment="debugging">
-      <change afterPath="$PROJECT_DIR$/IBKR.Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/conf.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/runtime.cron" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/runtime.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="0fb39abf-f77e-40c2-b4a2-8e236b5e49b1" name="Changes" comment="debugging" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,7 +79,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717592856938</updated>
       <workItem from="1717592857971" duration="17268000" />
-      <workItem from="1717680302368" duration="4015000" />
+      <workItem from="1717680302368" duration="4548000" />
     </task>
     <task id="LOCAL-00001" summary="inital commit">
       <option name="closed" value="true" />
@@ -112,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717608246697</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="debugging">
+      <option name="closed" value="true" />
+      <created>1717684606571</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1717684606571</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

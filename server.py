@@ -1,13 +1,12 @@
 import json
 import os
+import requests
 import time
 from enum import Enum
-from typing import Annotated
-
-import requests
 from fastapi import FastAPI, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from typing import Annotated
 
 app = FastAPI(
     title="TradingView IB Trader",
@@ -39,7 +38,10 @@ app = FastAPI(
     }
     ```
     
-    """,
+    
+    ## TradingView Webhook 設定
+    
+    """ + f"{os.getenv('API_HOST')}/action",
     swagger_ui_parameters={
         "useUnsafeMarkdown": True
     }
