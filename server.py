@@ -82,6 +82,7 @@ class TVPayload(BaseModel):
         訂單摘要: 在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作
         模擬倉: {self.simulated}
         """
+        return info
 
 
 def send_line_notify(message):
