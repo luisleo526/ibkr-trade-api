@@ -226,7 +226,7 @@ async def list_stock(
         return {"message": "Not login yet"}
 
 
-@app.get("/list/conid", tags=["根據ID列出合約資訊"])
+@app.get("/contract", tags=["根據ID列出合約資訊"])
 async def list_conid(
         conid: Annotated[int, Query(..., description="合約ID，可由 /list/futures 或 /list/stock 取得")],
         good: bool = Depends(required_login)
