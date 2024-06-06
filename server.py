@@ -76,7 +76,7 @@ class TVPayload(BaseModel):
     simulated: bool = Field(False, description="Simulated trading")
 
     def get_info(self):
-        side = 買入 if self.side == "buy" else "賣出"
+        side = '買入' if self.side == "buy" else "賣出"
         info = f"""
         帳號ID: {self.accId}
         訂單摘要: 在合約 {self.symbol} 上進行 {side} {self.amount} 個合約的操作
