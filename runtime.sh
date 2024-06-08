@@ -7,7 +7,7 @@ LOG_FILE="$HOME/logfile.log"
 echo "Script run at: $(date)" | tee -a "$LOG_FILE"
 
 # First curl command
-curl -s --location --request POST 'http://localhost:5000/v1/api/sso/validate' -k 2>&1 | tee -a "$LOG_FILE"
+curl -s --location --request POST 'https://localhost:5000/v1/api/sso/validate' -k 2>&1 | tee -a "$LOG_FILE"
 
 # Wait for 5 seconds
 sleep 5

@@ -9,10 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - ./server.py:/app/server.py
-    environment:
-      - LINE_NOTIFY_API_KEY=
-      - CPAPI_URL=
-      - API_HOST=
+    env_file:
+      - deploy.env
   ibkr:
     restart: always
     build:
