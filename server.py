@@ -255,3 +255,26 @@ async def list_conid(
     else:
         send_line_notify(f"操作 /list/conid 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
+
+
+@app.post("/search", tags=["根據關鍵字列出所有合約"])
+async def search_contract(
+        symbol: Annotated[str, Query(..., description="關鍵字")],
+        good: bool = Depends(required_login)
+):
+    if good:
+        url = f"{os.getenv('CPAPI_URL')}/v1/api/iserver/contract/search"
+        payload = {
+            "symbol": symbol
+        }
+        try:
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            return data
+        except Exception as e:
+            send_line_notify(f"操作失敗 /search\n原因：\n\n{str(e)}")
+            return {"message": str(e)}
+    else:
+        send_line_notify(f"操作 /search 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
+        return {"message": "Not login yet"}
