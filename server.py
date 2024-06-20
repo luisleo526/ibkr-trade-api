@@ -67,6 +67,11 @@ class TVSide(str, Enum):
     SELL = "sell"
 
 
+class RIGHT(str, Enum):
+    CALL = "C"
+    PUT = "P"
+
+
 class TVPayload(BaseModel):
     accId: str = Field(..., description="Account ID")
     symbol: str = Field("620731036", description="Symbol of the contract")
@@ -269,10 +274,10 @@ async def list_conid(
 
 @app.get("/show/opt", tags=["根據標的物ID列出期權合約資訊"])
 async def list_opt_conid(
-        conid: Annotated[int, Query(..., description="合約ID，可由 /list/futures 或 /list/stock 取得")],
+        conid: Annotated[int, Query(..., description="標的物合約ID，可由 /list/futures 或 /list/stock 取得")],
         month: Annotated[str, Query(..., description="月份，格式為MMMYY")] = 'JUN24',
         strike: Annotated[float, Query(..., description="履約價")] = 0,
-        right: Annotated[int, Query(..., description="權利金，可能值為C或P")] = 'C',
+        right: Annotated[RIGHT, Query(..., description="權利金，可能值為C或P")] = RIGHT.CALL,
         good: bool = Depends(required_login)
 ):
     if good:
@@ -317,7 +322,7 @@ async def search_contract(
 
 @app.get("/strikes", tags=["根據標的ID列出期權的履約價"])
 async def list_strikes(
-        conid: Annotated[int, Query(..., description="合約ID，可由 /search 取得")],
+        conid: Annotated[int, Query(..., description="標的物合約ID，可由 /search 取得")],
         month: Annotated[str, Query(..., description="月份，格式為MMM")] = None,
         good: bool = Depends(required_login)
 ):

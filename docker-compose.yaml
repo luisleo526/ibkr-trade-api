@@ -12,7 +12,6 @@ services:
       - ./server.py:/app/server.py
     env_file:
       - deploy.env
-    network_mode: bridge
   ibkr:
     container_name: ibkr
     restart: always
