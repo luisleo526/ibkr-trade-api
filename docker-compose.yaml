@@ -1,17 +1,20 @@
 version: "3.8"
 services:
   api:
+    container_name: api
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8888:8000"
     volumes:
       - ./server.py:/app/server.py
     env_file:
       - deploy.env
+    network_mode: bridge
   ibkr:
+    container_name: ibkr
     restart: always
     build:
       context: .

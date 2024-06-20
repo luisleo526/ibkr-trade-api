@@ -1,12 +1,14 @@
 import json
 import os
-import requests
 import time
 from enum import Enum
+from typing import Annotated
+
+import requests
 from fastapi import FastAPI, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel, Field
-from typing import Annotated
 
 app = FastAPI(
     title="TradingView IB Trader",
@@ -153,6 +155,14 @@ def confirmed_order(orderId: str):
         return {"message": str(e)}
 
 
+@app.get("/")
+async def read_root():
+    return get_swagger_ui_html(
+        openapi_url="https://www.interactivebrokers.com/api/doc.json",
+        title="TradingView IB Trader",
+    )
+
+
 @app.post("/action", tags=["TradingView專用"])
 async def action(payload: TVPayload, good: bool = Depends(required_login)):
     send_line_notify(f"接收到訂單：\n\n{payload.get_info()}")
@@ -237,7 +247,7 @@ async def list_stock(
         return {"message": "Not login yet"}
 
 
-@app.get("/contract", tags=["根據ID列出合約資訊"])
+@app.get("/show", tags=["根據ID列出合約資訊"])
 async def list_conid(
         conid: Annotated[int, Query(..., description="合約ID，可由 /list/futures 或 /list/stock 取得")],
         good: bool = Depends(required_login)
@@ -257,15 +267,40 @@ async def list_conid(
         return {"message": "Not login yet"}
 
 
-@app.post("/search", tags=["根據關鍵字列出所有合約"])
-async def search_contract(
-        symbol: Annotated[str, Query(..., description="關鍵字")],
+@app.get("/show/opt", tags=["根據標的物ID列出期權合約資訊"])
+async def list_opt_conid(
+        conid: Annotated[int, Query(..., description="合約ID，可由 /list/futures 或 /list/stock 取得")],
+        month: Annotated[str, Query(..., description="月份，格式為MMMYY")] = 'JUN24',
+        strike: Annotated[float, Query(..., description="履約價")] = 0,
+        right: Annotated[int, Query(..., description="權利金，可能值為C或P")] = 'C',
         good: bool = Depends(required_login)
 ):
     if good:
-        url = f"{os.getenv('CPAPI_URL')}/v1/api/iserver/contract/search"
+        url = f"{os.getenv('CPAPI_URL')}/v1/api/iserver/secdef/info?conid={conid}&sectype=OPT&month={month}&strike={strike}&right={right}"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return data
+        except Exception as e:
+            send_line_notify(f"操作失敗 /list/conid\n原因：\n\n{str(e)}")
+            return {"message": str(e)}
+    else:
+        send_line_notify(f"操作 /list/conid 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
+        return {"message": "Not login yet"}
+
+
+@app.post("/search", tags=["根據關鍵字列出所有合約"])
+async def search_contract(
+        symbol: Annotated[str, Query(..., description="關鍵字")],
+        name: Annotated[bool, Query(..., description="合約名稱")] = True,
+        good: bool = Depends(required_login)
+):
+    if good:
+        url = f"{os.getenv('CPAPI_URL')}/v1/api/iserver/secdef/search"
         payload = {
-            "symbol": symbol
+            "symbol": symbol,
+            "name": name
         }
         try:
             response = requests.post(url, json=payload)
@@ -278,3 +313,48 @@ async def search_contract(
     else:
         send_line_notify(f"操作 /search 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
         return {"message": "Not login yet"}
+
+
+@app.get("/strikes", tags=["根據標的ID列出期權的履約價"])
+async def list_strikes(
+        conid: Annotated[int, Query(..., description="合約ID，可由 /search 取得")],
+        month: Annotated[str, Query(..., description="月份，格式為MMM")] = None,
+        good: bool = Depends(required_login)
+):
+    if good:
+        url = f"{os.getenv('CPAPI_URL')}/v1/api/iserver/secdef/strikes?conid={conid}&sectype=OPT&month={month.upper()}"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return data
+        except Exception as e:
+            send_line_notify(f"操作失敗 /strikes\n原因：\n\n{str(e)}")
+            return {"message": str(e)}
+    else:
+        send_line_notify(f"操作 /strikes 失敗，尚未登入，請前往 {os.getenv('CPAPI_URL')} 登入！")
+        return {"message": "Not login yet"}
+
+
+official = FastAPI()
+
+
+def custom_openapi():
+    if official.openapi_schema:
+        return official.openapi_schema
+
+    openapi_url = 'https://www.interactivebrokers.com/api/doc.json'
+    openapi_schema = requests.get(openapi_url).json()
+
+    # remove the server from the schema
+    openapi_schema['host'] = 'cpapi.asd555asd.4pass.io'
+
+    openapi_schema['schemes'] = ['https']
+
+    official.openapi_schema = openapi_schema
+    return official.openapi_schema
+
+
+official.openapi = custom_openapi
+
+app.mount("/official", official)
